@@ -1,1 +1,1 @@
-# pickup-game-finder
+# pickup_game_finder
