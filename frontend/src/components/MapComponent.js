@@ -5,7 +5,7 @@ import { getGames } from '../services/gameService';
 import { format } from 'date-fns';
 import './MapComponent.css';
 
-const MapComponent = ({ height = '400px', interactive = false, showInfoWindow = false }) => {
+const MapComponent = ({ height = '400px', interactive = false, showInfoWindow = false, onClick }) => {
   const navigate = useNavigate();
   const [games, setGames] = useState([]);
   const [selectedGame, setSelectedGame] = useState(null);
@@ -15,7 +15,7 @@ const MapComponent = ({ height = '400px', interactive = false, showInfoWindow = 
 
   // Hardcode the API key for development
   const MAPS_API_KEY = 'AIzaSyAo4_efKHuPV09nMGVg3XVAm6SnUaCcA2E';
-  
+
   console.log('Google Maps API Key:', MAPS_API_KEY);
 
   const { isLoaded } = useJsApiLoader({
@@ -34,7 +34,7 @@ const MapComponent = ({ height = '400px', interactive = false, showInfoWindow = 
           };
           setUserLocation(location);
           setCenter(location);
-          
+
           // Fetch games if needed
           fetchGames();
         },
@@ -64,20 +64,18 @@ const MapComponent = ({ height = '400px', interactive = false, showInfoWindow = 
   }, []);
 
   const handleMapClick = (event) => {
-    if (interactive) {
-      const location = {
-        lat: event.latLng.lat(),
-        lng: event.latLng.lng()
-      };
-      
-      // Navigate to create game page with location pre-filled
-      navigate('/games/create', { 
-        state: { 
-          location: location 
-        } 
-      });
+    const location = {
+      lat: event.latLng.lat(),
+      lng: event.latLng.lng()
+    };
+
+    if (interactive && onClick) {
+      onClick(location); // Use the callback passed from CreateGame
+    } else if (interactive) {
+      navigate('/games/create', { state: { location } });
     }
   };
+
 
   const handleMarkerClick = (game) => {
     if (showInfoWindow) {

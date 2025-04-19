@@ -36,7 +36,7 @@ const CreateGame = () => {
 
   const handleMapClick = (location) => {
     setSelectedLocation(location);
-    
+
     // Get address from coordinates using Geocoding API
     const geocoder = new window.google.maps.Geocoder();
     geocoder.geocode({ location }, (results, status) => {
@@ -64,7 +64,7 @@ const CreateGame = () => {
     };
 
     const result = await createGame(gameData);
-    
+
     if (result.success) {
       toast.success('Game created successfully!');
       navigate(`/games/${result.data._id}`);
@@ -77,7 +77,7 @@ const CreateGame = () => {
     <div className="create-game-page">
       <div className="form-container">
         <h1>Create a New Game</h1>
-        
+
         <Formik
           initialValues={initialValues}
           validationSchema={validationSchema}
@@ -192,8 +192,8 @@ const CreateGame = () => {
                 <button type="submit" className="submit-btn">
                   Create Game
                 </button>
-                <button 
-                  type="button" 
+                <button
+                  type="button"
                   className="cancel-btn"
                   onClick={() => navigate('/dashboard')}
                 >
