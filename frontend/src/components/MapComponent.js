@@ -5,7 +5,7 @@ import { getGames } from '../services/gameService';
 import { format } from 'date-fns';
 import './MapComponent.css';
 
-const MapComponent = ({ height = '400px', interactive = false, showInfoWindow = false, onClick }) => {
+const MapComponent = ({ height = '400px', interactive = false, showInfoWindow = false, onClick, markers = [] }) => {
   const navigate = useNavigate();
   const [games, setGames] = useState([]);
   const [selectedGame, setSelectedGame] = useState(null);
@@ -70,12 +70,9 @@ const MapComponent = ({ height = '400px', interactive = false, showInfoWindow = 
     };
 
     if (interactive && onClick) {
-      onClick(location); // Use the callback passed from CreateGame
-    } else if (interactive) {
-      navigate('/games/create', { state: { location } });
+      onClick(location); // Call CreateGame handler
     }
   };
-
 
   const handleMarkerClick = (game) => {
     if (showInfoWindow) {
@@ -108,6 +105,16 @@ const MapComponent = ({ height = '400px', interactive = false, showInfoWindow = 
             title="Your location"
           />
         )}
+
+        {/* Markers passed from parent */}
+        {markers.map((marker) => (
+          <Marker
+            key={marker.id}
+            position={{ lat: marker.lat, lng: marker.lng }}
+            title={marker.title}
+          />
+        ))}
+
 
         {/* Game markers */}
         {games.map((game) => (
