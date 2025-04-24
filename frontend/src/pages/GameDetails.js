@@ -158,6 +158,15 @@ const GameDetails = () => {
           </div>
         </div>
         
+        <div className="game-host">
+          <h3>Host</h3>
+          {game.host && (
+            <div className="host-info">
+              <span className="host-name">{game.host}</span>
+            </div>
+          )}
+        </div>
+        
         <div className="game-description">
           <h2>Description</h2>
           <p>{game.description}</p>

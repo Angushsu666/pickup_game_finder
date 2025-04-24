@@ -1,20 +1,18 @@
 .game-card {
-  background-color: #fff;
+  background-color: var(--dark-card);
   border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   overflow: hidden;
-  transition: transform 0.2s, box-shadow 0.2s;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+  transition: transform 0.2s;
 }
 
 .game-card:hover {
   transform: translateY(-5px);
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
 }
 
 .game-card-header {
-  padding: 1rem;
-  background-color: #f8f9fa;
-  border-bottom: 1px solid #eee;
+  padding: 1.25rem;
+  background-color: rgba(0, 0, 0, 0.2);
   display: flex;
   align-items: center;
 }
@@ -26,44 +24,49 @@
 
 .game-card-header h3 {
   margin: 0;
-  font-size: 1.2rem;
-  color: #333;
+  font-size: 1.25rem;
+  color: var(--dark-text-primary);
 }
 
 .game-card-body {
-  padding: 1rem;
+  padding: 1.25rem;
 }
 
 .game-info {
   display: flex;
   align-items: center;
   margin-bottom: 0.75rem;
-  color: #555;
-  font-size: 0.9rem;
+  color: var(--dark-text-secondary);
 }
 
 .game-info svg {
-  margin-right: 0.5rem;
-  color: #4a90e2;
+  margin-right: 0.75rem;
+  min-width: 16px;
+  color: var(--accent-color);
 }
 
 .skill-level {
-  font-size: 0.85rem;
-  color: #666;
+  display: inline-block;
+  background-color: rgba(255, 255, 255, 0.1);
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.875rem;
+  color: var(--dark-text-secondary);
   margin-top: 0.5rem;
+  text-transform: capitalize;
 }
 
 .game-card-footer {
-  padding: 1rem;
-  border-top: 1px solid #eee;
-  text-align: center;
+  padding: 1rem 1.25rem;
+  background-color: rgba(0, 0, 0, 0.1);
+  text-align: right;
 }
 
 .view-details-btn {
   display: inline-block;
-  padding: 0.5rem 1rem;
-  background-color: #4a90e2;
+  background-color: var(--accent-color);
   color: white;
+  padding: 0.5rem 1rem;
   border-radius: 4px;
   text-decoration: none;
   font-weight: 500;
@@ -71,5 +74,6 @@
 }
 
 .view-details-btn:hover {
-  background-color: #3a7bc8;
-} 
+  background-color: var(--accent-hover);
+  text-decoration: none;
+}

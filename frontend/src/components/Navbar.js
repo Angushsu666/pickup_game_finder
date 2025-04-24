@@ -23,10 +23,10 @@ const Navbar = () => {
         <div className="navbar-menu">
           {isAuthenticated ? (
             <>
-              <Link to="/games" className="navbar-item">
+              <Link to="/find-games" className="navbar-item">
                 <FaSearch /> Find Games
               </Link>
-              <Link to="/games/create" className="navbar-item">
+              <Link to="/create-game" className="navbar-item">
                 <FaPlus /> Create Game
               </Link>
               <Link to="/dashboard" className="navbar-item">

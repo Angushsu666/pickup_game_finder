@@ -1,6 +1,5 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { format } from 'date-fns';
 import { FaCalendarAlt, FaMapMarkerAlt, FaUsers } from 'react-icons/fa';
 import './GameCard.css';
 
@@ -8,23 +7,29 @@ const GameCard = ({ game }) => {
   const sportIcons = {
     soccer: '⚽',
     basketball: '🏀',
-    volleyball: '🏐'
+    volleyball: '🏐',
+    tennis: '🎾',
+    baseball: '⚾',
+    football: '🏈'
   };
 
+  // Format day and time instead of using date-fns
+  const formattedTime = game.time || '00:00';
+  
   return (
     <div className="game-card">
       <div className="game-card-header">
-        <span className="sport-icon">{sportIcons[game.sport]}</span>
+        <span className="sport-icon">{sportIcons[game.sport] || '🏆'}</span>
         <h3>{game.title}</h3>
       </div>
       <div className="game-card-body">
         <p className="game-info">
           <FaCalendarAlt />
-          {format(new Date(game.date), 'MMM dd, yyyy - h:mm a')}
+          {game.dayOfWeek}, {formattedTime}
         </p>
         <p className="game-info">
           <FaMapMarkerAlt />
-          {game.location.address}
+          {game.location.city}, {game.location.state}
         </p>
         <p className="game-info">
           <FaUsers />

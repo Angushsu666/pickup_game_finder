@@ -10,29 +10,41 @@ const gameSchema = new mongoose.Schema(
     sport: {
       type: String,
       required: true,
-      enum: ['soccer', 'basketball', 'volleyball']
+      enum: ['soccer', 'basketball', 'volleyball', 'tennis', 'baseball', 'football']
     },
     description: {
       type: String,
       required: true
     },
     location: {
+      locationDetails: {
+        type: String,
+        required: true
+      },
+      city: {
+        type: String,
+        required: true
+      },
+      state: {
+        type: String,
+        required: true
+      },
       type: {
         type: String,
-        enum: ['Point'],
         default: 'Point'
       },
       coordinates: {
-        type: [Number], // [longitude, latitude]
-        required: true
-      },
-      address: {
-        type: String,
-        required: true
+        type: [Number],
+        default: [0, 0]
       }
     },
-    date: {
-      type: Date,
+    dayOfWeek: {
+      type: String,
+      enum: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
+      required: true
+    },
+    time: {
+      type: String,
       required: true
     },
     duration: {
@@ -53,6 +65,10 @@ const gameSchema = new mongoose.Schema(
       ref: 'User',
       required: true
     },
+    host: {
+      type: String,
+      required: true
+    },
     participants: [{
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User'
@@ -68,9 +84,6 @@ const gameSchema = new mongoose.Schema(
   }
 );
 
-// Create geospatial index for location-based queries
-gameSchema.index({ location: '2dsphere' });
-
 const Game = mongoose.model('Game', gameSchema);
 
-module.exports = Game; 
+module.exports = Game;

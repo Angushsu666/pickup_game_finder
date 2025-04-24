@@ -1,19 +1,14 @@
 .auth-page {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: calc(100vh - 80px);
+  max-width: 500px;
+  margin: 0 auto;
   padding: 2rem 1rem;
-  background-color: #f9f9f9;
 }
 
 .auth-container {
-  width: 100%;
-  max-width: 450px;
-  background-color: #fff;
+  background-color: var(--dark-card);
   border-radius: 8px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
   padding: 2rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 .auth-header {
@@ -23,56 +18,79 @@
 
 .auth-header h1 {
   font-size: 2rem;
-  color: #333;
+  color: var(--dark-text-primary);
   margin-bottom: 0.5rem;
 }
 
 .auth-header p {
-  color: #666;
+  color: var(--dark-text-secondary);
 }
 
 .auth-form {
-  margin-bottom: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
 }
 
 .form-group {
-  margin-bottom: 1.5rem;
+  display: flex;
+  flex-direction: column;
 }
 
 .form-group label {
-  display: block;
   margin-bottom: 0.5rem;
   font-weight: 600;
-  color: #333;
+  color: var(--dark-text-primary);
 }
 
 .form-group input,
 .form-group select {
-  width: 100%;
   padding: 0.75rem;
-  border: 1px solid #ddd;
+  border: 1px solid var(--dark-border);
   border-radius: 4px;
   font-size: 1rem;
+  background-color: var(--dark-surface);
+  color: var(--dark-text-primary);
 }
 
 .form-group input:focus,
 .form-group select:focus {
   outline: none;
-  border-color: #4a90e2;
-  box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.2);
+  border-color: var(--accent-color);
+}
+
+.checkbox-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.checkbox-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.checkbox-item input {
+  margin: 0;
+}
+
+.checkbox-item label {
+  margin: 0;
+  font-weight: normal;
 }
 
 .error-message {
-  color: #dc3545;
+  color: var(--error-color);
   font-size: 0.875rem;
   margin-top: 0.25rem;
 }
 
-.submit-btn {
-  width: 100%;
+.auth-btn {
   padding: 0.75rem;
-  background-color: #4a90e2;
-  color: #fff;
+  background-color: var(--accent-color);
+  color: white;
   border: none;
   border-radius: 4px;
   font-size: 1rem;
@@ -81,39 +99,24 @@
   transition: background-color 0.2s;
 }
 
-.submit-btn:hover {
-  background-color: #3a7bc8;
+.auth-btn:hover {
+  background-color: var(--accent-hover);
 }
 
-.submit-btn:disabled {
-  background-color: #a0c3e8;
+.auth-btn:disabled {
+  background-color: var(--dark-border);
   cursor: not-allowed;
 }
 
 .auth-footer {
-  text-align: center;
   margin-top: 1.5rem;
-  color: #666;
+  text-align: center;
+  color: var(--dark-text-secondary);
 }
 
 .auth-footer a {
-  color: #4a90e2;
+  color: var(--accent-color);
   font-weight: 600;
-}
-
-.auth-footer a:hover {
-  text-decoration: underline;
-}
-
-.checkbox-group {
-  display: flex;
-  align-items: center;
-  margin-bottom: 1rem;
-}
-
-.checkbox-group input {
-  width: auto;
-  margin-right: 0.5rem;
 }
 
 .interests-group {

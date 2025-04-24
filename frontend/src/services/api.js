@@ -4,7 +4,10 @@ import axios from 'axios';
 const API_URL = 'http://localhost:5000/api';
 
 const api = axios.create({
-  baseURL: API_URL
+  baseURL: API_URL,
+  headers: {
+    'Content-Type': 'application/json'
+  }
 });
 
 // Add request interceptor to include auth token
@@ -16,7 +19,9 @@ api.interceptors.request.use(
     }
     return config;
   },
-  (error) => Promise.reject(error)
+  (error) => {
+    return Promise.reject(error);
+  }
 );
 
 export default api;

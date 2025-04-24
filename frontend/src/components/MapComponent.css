@@ -96,4 +96,23 @@
 
 .map-control-btn:hover {
   background-color: #f8f9fa;
+}
+
+.map-placeholder {
+  background-color: var(--dark-card);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 2rem;
+}
+
+.map-message {
+  color: var(--dark-text-secondary);
+}
+
+.map-message h3 {
+  color: var(--dark-text-primary);
+  margin-bottom: 1rem;
 } 

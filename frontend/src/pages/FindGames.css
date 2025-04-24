@@ -48,7 +48,7 @@
   border-color: #4a90e2;
 }
 
-.filters-section {
+.search-form {
   background-color: #fff;
   border-radius: 8px;
   padding: 1.5rem;
@@ -60,22 +60,31 @@
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   gap: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.filter-group {
+  display: flex;
+  flex-direction: column;
 }
 
 .filter-group label {
-  display: block;
   margin-bottom: 0.5rem;
   font-weight: 600;
   color: #333;
 }
 
-.filter-group select,
-.filter-group input {
-  width: 100%;
-  padding: 0.75rem;
+.filter-group input,
+.filter-group select {
+  padding: 0.75rem 1rem;
   border: 1px solid #ddd;
   border-radius: 4px;
   font-size: 1rem;
+}
+
+/* Add left padding to input fields */
+.filter-group input {
+  padding-left: 1.5rem;
 }
 
 .date-picker-wrapper {

@@ -4,116 +4,125 @@ const { validationResult } = require('express-validator');
 
 // Create a new game
 exports.createGame = async (req, res) => {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return res.status(400).json({ errors: errors.array() });
-  }
-
-  const { 
-    title, 
-    sport, 
-    description, 
-    location, 
-    date, 
-    duration, 
-    skillLevel, 
-    maxPlayers 
-  } = req.body;
-
   try {
-    const game = new Game({
-      title,
-      sport,
-      description,
-      location,
-      date,
+    const { 
+      title, 
+      sport, 
+      description, 
+      dayOfWeek,
+      time,
       duration,
       skillLevel,
       maxPlayers,
-      creator: req.user._id,
-      participants: [req.user._id] // Creator is automatically a participant
+      location 
+    } = req.body;
+
+    // Validate required fields
+    if (!title || !sport || !description || !location || !dayOfWeek || !time) {
+      return res.status(400).json({ 
+        success: false, 
+        message: 'Please provide all required fields' 
+      });
+    }
+
+    // Validate location data
+    if (!location.locationDetails || !location.city || !location.state) {
+      return res.status(400).json({ 
+        success: false, 
+        message: 'Please provide complete location information' 
+      });
+    }
+
+    // Get the user's name for the host field
+    const user = await User.findById(req.user.id);
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: 'User not found'
+      });
+    }
+
+    // Create new game
+    const newGame = new Game({
+      title,
+      sport,
+      description,
+      location: {
+        locationDetails: location.locationDetails,
+        city: location.city,
+        state: location.state,
+        type: 'Point',
+        coordinates: [0, 0] // Default coordinates if not provided
+      },
+      dayOfWeek,
+      time,
+      duration,
+      skillLevel,
+      maxPlayers,
+      creator: req.user.id,
+      host: user.name, // Store the user's name directly
+      participants: [req.user.id] // Creator is automatically a participant
     });
 
-    await game.save();
+    await newGame.save();
 
-    // Update user's gamesCreated and gamesJoined arrays
-    await User.findByIdAndUpdate(req.user._id, {
-      $push: { 
-        gamesCreated: game._id,
-        gamesJoined: game._id
-      }
+    res.status(201).json({
+      success: true,
+      data: newGame
     });
-
-    res.status(201).json(game);
   } catch (error) {
-    res.status(500).json({ message: 'Server error', error: error.message });
+    console.error('Error creating game:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Server error'
+    });
   }
 };
 
-// Get all games with filtering
+// Get all games with optional filtering
 exports.getGames = async (req, res) => {
   try {
-    const { 
-      sport, 
-      skillLevel, 
-      date, 
-      longitude, 
-      latitude, 
-      maxDistance = 10000 // Default 10km
-    } = req.query;
-
-    let query = {};
-
-    // Filter by sport
-    if (sport) {
-      query.sport = sport;
+    console.log("Get games request received with query:", req.query);
+    
+    // Build query object from request query parameters
+    const query = {};
+    
+    // Location filters
+    if (req.query['location.city']) {
+      query['location.city'] = req.query['location.city'];
     }
-
-    // Filter by skill level
-    if (skillLevel) {
-      query.skillLevel = { $in: [skillLevel, 'all'] };
+    
+    if (req.query['location.state']) {
+      query['location.state'] = req.query['location.state'];
     }
-
-    // Filter by date (games on or after the specified date)
-    if (date) {
-      const startDate = new Date(date);
-      startDate.setHours(0, 0, 0, 0);
-      
-      const endDate = new Date(date);
-      endDate.setHours(23, 59, 59, 999);
-      
-      query.date = { $gte: startDate, $lte: endDate };
-    } else {
-      // By default, only show future games
-      query.date = { $gte: new Date() };
+    
+    // Sport filter
+    if (req.query.sport) {
+      query.sport = req.query.sport;
     }
-
-    // Filter by location if coordinates are provided
-    if (longitude && latitude) {
-      query.location = {
-        $near: {
-          $geometry: {
-            type: 'Point',
-            coordinates: [parseFloat(longitude), parseFloat(latitude)]
-          },
-          $maxDistance: parseInt(maxDistance)
-        }
-      };
+    
+    // Day of week filter
+    if (req.query.dayOfWeek) {
+      query.dayOfWeek = req.query.dayOfWeek;
     }
-
-    // Only show games with available spots
-    query.$expr = { $lt: [{ $size: '$participants' }, '$maxPlayers'] };
-
-    // Only show scheduled games
-    query.status = 'scheduled';
-
+    
+    // Creator filter
+    if (req.query.creator) {
+      query.creator = req.query.creator;
+    }
+    
+    console.log("Executing query:", query);
+    
     const games = await Game.find(query)
-      .populate('creator', 'name profilePicture')
+      .populate('creator', 'name profilePicture email')
       .populate('participants', 'name profilePicture')
-      .sort({ date: 1 });
-
+      .sort({ createdAt: -1 });
+    
+    console.log(`Found ${games.length} games`);
+    
     res.json(games);
   } catch (error) {
+    console.error("Error in getGames:", error);
     res.status(500).json({ message: 'Server error', error: error.message });
   }
 };

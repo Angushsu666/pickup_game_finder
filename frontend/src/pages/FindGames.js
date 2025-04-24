@@ -1,239 +1,155 @@
-import React, { useState, useEffect } from 'react';
-import { getGames } from '../services/gameService';
-import { useAuth } from '../context/AuthContext';
-import GameCard from '../components/GameCard';
-import MapComponent from '../components/MapComponent';
-import DatePicker from 'react-datepicker';
-import 'react-datepicker/dist/react-datepicker.css';
-import { format } from 'date-fns';
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import './FindGames.css';
 
+// US States data
+const states = [
+  'Alabama', 'Alaska', 'Arizona', 'Arkansas', 'California', 'Colorado', 'Connecticut', 
+  'Delaware', 'Florida', 'Georgia', 'Hawaii', 'Idaho', 'Illinois', 'Indiana', 'Iowa', 
+  'Kansas', 'Kentucky', 'Louisiana', 'Maine', 'Maryland', 'Massachusetts', 'Michigan', 
+  'Minnesota', 'Mississippi', 'Missouri', 'Montana', 'Nebraska', 'Nevada', 'New Hampshire', 
+  'New Jersey', 'New Mexico', 'New York', 'North Carolina', 'North Dakota', 'Ohio', 'Oklahoma', 
+  'Oregon', 'Pennsylvania', 'Rhode Island', 'South Carolina', 'South Dakota', 'Tennessee', 
+  'Texas', 'Utah', 'Vermont', 'Virginia', 'Washington', 'West Virginia', 'Wisconsin', 'Wyoming'
+];
+
+// Cities by state
+const citiesByState = {
+  'California': ['Los Angeles', 'San Francisco', 'San Diego', 'Sacramento'],
+  'New York': ['New York City', 'Buffalo', 'Rochester', 'Syracuse'],
+  'Texas': ['Houston', 'Austin', 'Dallas', 'San Antonio'],
+  'Florida': ['Miami', 'Orlando', 'Tampa', 'Jacksonville'],
+  'Illinois': ['Chicago', 'Springfield', 'Peoria', 'Rockford'],
+  // Add more states and cities as needed
+};
+
 const FindGames = () => {
-  const { updateLocation } = useAuth();
-  const [games, setGames] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [userLocation, setUserLocation] = useState(null);
-  const [filters, setFilters] = useState({
-    sport: '',
-    skillLevel: '',
-    date: null,
-    maxDistance: 10000 // 10km default
-  });
-  const [viewMode, setViewMode] = useState('list'); // 'list' or 'map'
+  const navigate = useNavigate();
+  const [selectedState, setSelectedState] = useState('');
+  const [selectedCity, setSelectedCity] = useState('');
+  const [selectedSport, setSelectedSport] = useState('');
+  const [selectedDay, setSelectedDay] = useState('');
+  const [cities, setCities] = useState([]);
 
-  useEffect(() => {
-    // Get user's current location
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          const location = {
-            lat: position.coords.latitude,
-            lng: position.coords.longitude
-          };
-          setUserLocation(location);
-          
-          // Update user's location in the backend
-          updateLocation(location.lng, location.lat);
-          
-          // Fetch games with the user's location
-          fetchGames(location);
-        },
-        (error) => {
-          console.error('Error getting location:', error);
-          // Fetch games without location filter
-          fetchGames();
-        }
-      );
+  const handleStateChange = (e) => {
+    const state = e.target.value;
+    setSelectedState(state);
+    setSelectedCity('');
+    
+    // Update cities based on selected state
+    if (state && citiesByState[state]) {
+      setCities(citiesByState[state]);
     } else {
-      // Fetch games without location filter
-      fetchGames();
+      setCities([]);
     }
-  }, [updateLocation]);
+  };
 
-  const fetchGames = async (location = null) => {
-    setLoading(true);
+  const handleSearch = () => {
+    // Build query parameters
+    const params = new URLSearchParams();
     
-    const queryParams = { ...filters };
-    
-    if (location) {
-      queryParams.longitude = location.lng;
-      queryParams.latitude = location.lat;
-      queryParams.maxDistance = filters.maxDistance;
+    if (selectedState) {
+      params.append('state', selectedState);
     }
     
-    // Format date for API
-    if (queryParams.date) {
-      queryParams.date = format(queryParams.date, 'yyyy-MM-dd');
+    if (selectedCity) {
+      params.append('city', selectedCity);
     }
     
-    // Remove empty filters
-    Object.keys(queryParams).forEach(key => {
-      if (!queryParams[key]) delete queryParams[key];
-    });
-    
-    const result = await getGames(queryParams);
-    
-    if (result.success) {
-      setGames(result.data);
-    } else {
-      setError(result.message);
+    if (selectedSport) {
+      params.append('sport', selectedSport);
     }
     
-    setLoading(false);
-  };
-
-  const handleFilterChange = (name, value) => {
-    setFilters(prev => ({
-      ...prev,
-      [name]: value
-    }));
-  };
-
-  const applyFilters = () => {
-    fetchGames(userLocation);
-  };
-
-  const resetFilters = () => {
-    setFilters({
-      sport: '',
-      skillLevel: '',
-      date: null,
-      maxDistance: 10000
-    });
+    if (selectedDay) {
+      params.append('dayOfWeek', selectedDay);
+    }
     
-    // Fetch games with reset filters
-    fetchGames(userLocation);
+    // Navigate to results page with query parameters
+    navigate(`/game-results?${params.toString()}`);
   };
-
-  const getMapMarkers = () => {
-    return games.map(game => ({
-      id: game._id,
-      lat: game.location.coordinates[1],
-      lng: game.location.coordinates[0],
-      title: game.title,
-      content: `${game.sport} - ${format(new Date(game.date), 'MMM dd, h:mm a')}`,
-      link: `/games/${game._id}`
-    }));
-  };
-
-  if (loading && games.length === 0) {
-    return <div className="loading">Loading games...</div>;
-  }
 
   return (
-    <div className="find-games-page">
-      <div className="page-header">
+    <div className="find-games-container">
+      <div className="find-games-content">
         <h1>Find Games</h1>
-        <div className="view-toggle">
-          <button 
-            className={`toggle-btn ${viewMode === 'list' ? 'active' : ''}`}
-            onClick={() => setViewMode('list')}
-          >
-            List View
-          </button>
-          <button 
-            className={`toggle-btn ${viewMode === 'map' ? 'active' : ''}`}
-            onClick={() => setViewMode('map')}
-          >
-            Map View
-          </button>
-        </div>
-      </div>
-
-      <div className="filters-section">
-        <div className="filter-group">
-          <label>Sport</label>
-          <select 
-            value={filters.sport}
-            onChange={(e) => handleFilterChange('sport', e.target.value)}
-          >
-            <option value="">All Sports</option>
-            <option value="soccer">Soccer</option>
-            <option value="basketball">Basketball</option>
-            <option value="volleyball">Volleyball</option>
-          </select>
-        </div>
-
-        <div className="filter-group">
-          <label>Skill Level</label>
-          <select 
-            value={filters.skillLevel}
-            onChange={(e) => handleFilterChange('skillLevel', e.target.value)}
-          >
-            <option value="">All Levels</option>
-            <option value="beginner">Beginner</option>
-            <option value="intermediate">Intermediate</option>
-            <option value="advanced">Advanced</option>
-          </select>
-        </div>
-
-        <div className="filter-group">
-          <label>Date</label>
-          <DatePicker
-            selected={filters.date}
-            onChange={(date) => handleFilterChange('date', date)}
-            dateFormat="yyyy-MM-dd"
-            placeholderText="Select a date"
-            isClearable
-          />
-        </div>
-
-        <div className="filter-group">
-          <label>Distance (km)</label>
-          <select 
-            value={filters.maxDistance}
-            onChange={(e) => handleFilterChange('maxDistance', Number(e.target.value))}
-          >
-            <option value="1000">1 km</option>
-            <option value="5000">5 km</option>
-            <option value="10000">10 km</option>
-            <option value="25000">25 km</option>
-            <option value="50000">50 km</option>
-          </select>
-        </div>
-
-        <div className="filter-buttons">
-          <button className="apply-btn" onClick={applyFilters}>
-            Apply Filters
-          </button>
-          <button className="reset-btn" onClick={resetFilters}>
-            Reset
-          </button>
-        </div>
-      </div>
-
-      {error && <div className="error-message">{error}</div>}
-
-      {viewMode === 'map' ? (
-        <div className="map-view">
-          <MapComponent
-            height="600px"
-            center={userLocation}
-            markers={getMapMarkers()}
-            showCurrentLocation={true}
-          />
-        </div>
-      ) : (
-        <div className="list-view">
-          {games.length > 0 ? (
-            <div className="games-grid">
-              {games.map(game => (
-                <GameCard key={game._id} game={game} />
+        <p>Search for games in your area</p>
+        
+        <div className="search-form">
+          <div className="form-group">
+            <label htmlFor="state">State</label>
+            <select 
+              id="state" 
+              value={selectedState} 
+              onChange={handleStateChange}
+            >
+              <option value="">Select a state</option>
+              {states.map(state => (
+                <option key={state} value={state}>{state}</option>
               ))}
-            </div>
-          ) : (
-            <div className="no-games">
-              <p>No games found matching your criteria.</p>
-              <button className="reset-btn" onClick={resetFilters}>
-                Reset Filters
-              </button>
-            </div>
-          )}
+            </select>
+          </div>
+          
+          <div className="form-group">
+            <label htmlFor="city">City</label>
+            <select 
+              id="city" 
+              value={selectedCity} 
+              onChange={(e) => setSelectedCity(e.target.value)}
+              disabled={!selectedState || cities.length === 0}
+            >
+              <option value="">Select a city</option>
+              {cities.map(city => (
+                <option key={city} value={city}>{city}</option>
+              ))}
+            </select>
+          </div>
+          
+          <div className="form-group">
+            <label htmlFor="sport">Sport (Optional)</label>
+            <select 
+              id="sport" 
+              value={selectedSport} 
+              onChange={(e) => setSelectedSport(e.target.value)}
+            >
+              <option value="">Any Sport</option>
+              <option value="soccer">Soccer</option>
+              <option value="basketball">Basketball</option>
+              <option value="volleyball">Volleyball</option>
+              <option value="tennis">Tennis</option>
+              <option value="baseball">Baseball</option>
+              <option value="football">Football</option>
+            </select>
+          </div>
+          
+          <div className="form-group">
+            <label htmlFor="day">Day (Optional)</label>
+            <select 
+              id="day" 
+              value={selectedDay} 
+              onChange={(e) => setSelectedDay(e.target.value)}
+            >
+              <option value="">Any Day</option>
+              <option value="Monday">Monday</option>
+              <option value="Tuesday">Tuesday</option>
+              <option value="Wednesday">Wednesday</option>
+              <option value="Thursday">Thursday</option>
+              <option value="Friday">Friday</option>
+              <option value="Saturday">Saturday</option>
+              <option value="Sunday">Sunday</option>
+            </select>
+          </div>
+          
+          <button 
+            className="search-button" 
+            onClick={handleSearch}
+            disabled={!selectedState || !selectedCity}
+          >
+            Search Games
+          </button>
         </div>
-      )}
+      </div>
     </div>
   );
 };
 
-export default FindGames; 
+export default FindGames;

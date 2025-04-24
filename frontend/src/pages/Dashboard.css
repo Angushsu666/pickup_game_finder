@@ -14,13 +14,13 @@
 .dashboard-header h1 {
   margin: 0;
   font-size: 2rem;
-  color: #333;
+  color: var(--dark-text-primary);
 }
 
 .create-game-btn {
   display: flex;
   align-items: center;
-  background-color: #4a90e2;
+  background-color: var(--accent-color);
   color: white;
   padding: 0.75rem 1.25rem;
   border-radius: 4px;
@@ -34,7 +34,8 @@
 }
 
 .create-game-btn:hover {
-  background-color: #3a7bc8;
+  background-color: var(--accent-hover);
+  text-decoration: none;
 }
 
 .dashboard-section {
@@ -44,8 +45,8 @@
 .dashboard-section h2 {
   margin-bottom: 1.5rem;
   font-size: 1.5rem;
-  color: #333;
-  border-bottom: 1px solid #eee;
+  color: var(--dark-text-primary);
+  border-bottom: 1px solid var(--dark-border);
   padding-bottom: 0.75rem;
 }
 
@@ -56,7 +57,7 @@
 }
 
 .empty-state {
-  background-color: #f8f9fa;
+  background-color: var(--dark-card);
   border-radius: 8px;
   padding: 2rem;
   text-align: center;
@@ -64,7 +65,7 @@
 
 .empty-state p {
   margin-bottom: 1.5rem;
-  color: #666;
+  color: var(--dark-text-secondary);
 }
 
 .btn {
@@ -77,12 +78,13 @@
 }
 
 .btn-primary {
-  background-color: #4a90e2;
+  background-color: var(--accent-color);
   color: white;
 }
 
 .btn-primary:hover {
-  background-color: #3a7bc8;
+  background-color: var(--accent-hover);
+  text-decoration: none;
 }
 
 .loading {
@@ -91,12 +93,12 @@
   align-items: center;
   min-height: 300px;
   font-size: 1.2rem;
-  color: #666;
+  color: var(--dark-text-secondary);
 }
 
 .error-message {
-  background-color: #f8d7da;
-  color: #721c24;
+  background-color: rgba(255, 107, 107, 0.2);
+  color: var(--error-color);
   padding: 1rem;
   border-radius: 4px;
   margin-bottom: 1.5rem;
@@ -115,4 +117,4 @@
   .games-grid {
     grid-template-columns: 1fr;
   }
-} 
+}

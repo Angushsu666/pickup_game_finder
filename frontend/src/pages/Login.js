@@ -33,7 +33,7 @@ const Login = () => {
     
     if (result.success) {
       toast.success('Login successful!');
-      navigate('/dashboard');
+      navigate('/find-games');
     } else {
       toast.error(result.message);
     }

@@ -1,46 +1,90 @@
 import React from 'react';
-import { Routes, Route } from 'react-router-dom';
-import { useAuth } from './context/AuthContext';
-import PrivateRoute from './components/PrivateRoute';
+import { Routes, Route, Navigate } from 'react-router-dom';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 import Navbar from './components/Navbar';
+import Footer from './components/Footer';
+
 import Home from './pages/Home';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
-import Profile from './pages/Profile';
 import CreateGame from './pages/CreateGame';
 import GameDetails from './pages/GameDetails';
-import EditGame from './pages/EditGame';
 import FindGames from './pages/FindGames';
+import GameResults from './pages/GameResults';
+import Profile from './pages/Profile';
+import EditProfile from './pages/EditProfile';
 import NotFound from './pages/NotFound';
-import './App.css';
+
+import PrivateRoute from './components/PrivateRoute';
 
 function App() {
-  const { loading } = useAuth();
-
-  if (loading) {
-    return <div className="loading">Loading...</div>;
-  }
-  
   return (
-    <div className="app">
+    <div className="app-container">
       <Navbar />
-      <main className="container">
+
+      <main className="main-content">
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
-          <Route path="/dashboard" element={<PrivateRoute><Dashboard /></PrivateRoute>} />
-          <Route path="/profile" element={<PrivateRoute><Profile /></PrivateRoute>} />
-          <Route path="/games/create" element={<PrivateRoute><CreateGame /></PrivateRoute>} />
-          <Route path="/games/:id" element={<PrivateRoute><GameDetails /></PrivateRoute>} />
-          <Route path="/games/:id/edit" element={<PrivateRoute><EditGame /></PrivateRoute>} />
-          <Route path="/games" element={<PrivateRoute><FindGames /></PrivateRoute>} />
-          <Route path="*" element={<NotFound />} />
+
+          <Route
+            path="/dashboard"
+            element={
+              <PrivateRoute>
+                <Dashboard />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/create-game"
+            element={
+              <PrivateRoute>
+                <CreateGame />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/games/:id"
+            element={
+              <PrivateRoute>
+                <GameDetails />
+              </PrivateRoute>
+            }
+          />
+
+          <Route path="/find-games" element={<FindGames />} />
+          <Route path="/game-results" element={<GameResults />} />
+
+          <Route
+            path="/profile"
+            element={
+              <PrivateRoute>
+                <Profile />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/edit-profile"
+            element={
+              <PrivateRoute>
+                <EditProfile />
+              </PrivateRoute>
+            }
+          />
+
+          <Route path="/404" element={<NotFound />} />
+          <Route path="*" element={<Navigate to="/404" />} />
         </Routes>
       </main>
+
+      <Footer />
+      <ToastContainer position="bottom-right" />
     </div>
   );
 }
 
-export default App; 
+export default App;

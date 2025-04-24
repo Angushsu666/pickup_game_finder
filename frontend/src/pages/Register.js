@@ -51,7 +51,7 @@ const Register = () => {
     
     if (result.success) {
       toast.success('Registration successful!');
-      navigate('/dashboard');
+      navigate('/find-games');
     } else {
       toast.error(result.message);
     }
