@@ -8,24 +8,69 @@ import './GameForm.css';
 
 // US States data
 const states = [
-  'Alabama', 'Alaska', 'Arizona', 'Arkansas', 'California', 'Colorado', 'Connecticut', 
-  'Delaware', 'Florida', 'Georgia', 'Hawaii', 'Idaho', 'Illinois', 'Indiana', 'Iowa', 
-  'Kansas', 'Kentucky', 'Louisiana', 'Maine', 'Maryland', 'Massachusetts', 'Michigan', 
-  'Minnesota', 'Mississippi', 'Missouri', 'Montana', 'Nebraska', 'Nevada', 'New Hampshire', 
-  'New Jersey', 'New Mexico', 'New York', 'North Carolina', 'North Dakota', 'Ohio', 'Oklahoma', 
-  'Oregon', 'Pennsylvania', 'Rhode Island', 'South Carolina', 'South Dakota', 'Tennessee', 
+  'Alabama', 'Alaska', 'Arizona', 'Arkansas', 'California', 'Colorado', 'Connecticut',
+  'Delaware', 'Florida', 'Georgia', 'Hawaii', 'Idaho', 'Illinois', 'Indiana', 'Iowa',
+  'Kansas', 'Kentucky', 'Louisiana', 'Maine', 'Maryland', 'Massachusetts', 'Michigan',
+  'Minnesota', 'Mississippi', 'Missouri', 'Montana', 'Nebraska', 'Nevada', 'New Hampshire',
+  'New Jersey', 'New Mexico', 'New York', 'North Carolina', 'North Dakota', 'Ohio', 'Oklahoma',
+  'Oregon', 'Pennsylvania', 'Rhode Island', 'South Carolina', 'South Dakota', 'Tennessee',
   'Texas', 'Utah', 'Vermont', 'Virginia', 'Washington', 'West Virginia', 'Wisconsin', 'Wyoming'
 ];
 
 // Cities by state (simplified - you would want a more complete dataset)
 const citiesByState = {
+  'Alabama': ['Birmingham', 'Montgomery', 'Mobile', 'Huntsville'],
+  'Alaska': ['Anchorage', 'Juneau', 'Fairbanks', 'Sitka'],
+  'Arizona': ['Phoenix', 'Tucson', 'Mesa', 'Scottsdale'],
+  'Arkansas': ['Little Rock', 'Fayetteville', 'Fort Smith', 'Springdale'],
   'California': ['Los Angeles', 'San Francisco', 'San Diego', 'Sacramento'],
-  'New York': ['New York City', 'Buffalo', 'Rochester', 'Syracuse'],
-  'Texas': ['Houston', 'Austin', 'Dallas', 'San Antonio'],
+  'Colorado': ['Denver', 'Colorado Springs', 'Aurora', 'Boulder'],
+  'Connecticut': ['Bridgeport', 'New Haven', 'Stamford', 'Hartford'],
+  'Delaware': ['Wilmington', 'Dover', 'Newark', 'Middletown'],
   'Florida': ['Miami', 'Orlando', 'Tampa', 'Jacksonville'],
+  'Georgia': ['Atlanta', 'Savannah', 'Augusta', 'Columbus'],
+  'Hawaii': ['Honolulu', 'Hilo', 'Kailua', 'Kapolei'],
+  'Idaho': ['Boise', 'Idaho Falls', 'Nampa', 'Twin Falls'],
   'Illinois': ['Chicago', 'Springfield', 'Peoria', 'Rockford'],
-  // Add more states and cities as needed
+  'Indiana': ['Indianapolis', 'Fort Wayne', 'Evansville', 'South Bend'],
+  'Iowa': ['Des Moines', 'Cedar Rapids', 'Davenport', 'Sioux City'],
+  'Kansas': ['Wichita', 'Topeka', 'Overland Park', 'Lawrence'],
+  'Kentucky': ['Louisville', 'Lexington', 'Bowling Green', 'Frankfort'],
+  'Louisiana': ['New Orleans', 'Baton Rouge', 'Shreveport', 'Lafayette'],
+  'Maine': ['Portland', 'Bangor', 'Augusta', 'Lewiston'],
+  'Maryland': ['Baltimore', 'Annapolis', 'Frederick', 'Rockville'],
+  'Massachusetts': ['Boston', 'Worcester', 'Springfield', 'Cambridge'],
+  'Michigan': ['Detroit', 'Grand Rapids', 'Ann Arbor', 'Lansing'],
+  'Minnesota': ['Minneapolis', 'Saint Paul', 'Duluth', 'Rochester'],
+  'Mississippi': ['Jackson', 'Gulfport', 'Biloxi', 'Hattiesburg'],
+  'Missouri': ['Kansas City', 'St. Louis', 'Springfield', 'Columbia'],
+  'Montana': ['Billings', 'Missoula', 'Great Falls', 'Bozeman'],
+  'Nebraska': ['Omaha', 'Lincoln', 'Bellevue', 'Grand Island'],
+  'Nevada': ['Las Vegas', 'Reno', 'Henderson', 'Carson City'],
+  'New Hampshire': ['Manchester', 'Nashua', 'Concord', 'Dover'],
+  'New Jersey': ['Newark', 'Jersey City', 'Paterson', 'Trenton'],
+  'New Mexico': ['Albuquerque', 'Santa Fe', 'Las Cruces', 'Roswell'],
+  'New York': ['New York City', 'Buffalo', 'Rochester', 'Syracuse'],
+  'North Carolina': ['Charlotte', 'Raleigh', 'Greensboro', 'Durham'],
+  'North Dakota': ['Fargo', 'Bismarck', 'Grand Forks', 'Minot'],
+  'Ohio': ['Columbus', 'Cleveland', 'Cincinnati', 'Toledo'],
+  'Oklahoma': ['Oklahoma City', 'Tulsa', 'Norman', 'Broken Arrow'],
+  'Oregon': ['Portland', 'Salem', 'Eugene', 'Gresham'],
+  'Pennsylvania': ['Philadelphia', 'Pittsburgh', 'Allentown', 'Erie'],
+  'Rhode Island': ['Providence', 'Warwick', 'Cranston', 'Pawtucket'],
+  'South Carolina': ['Columbia', 'Charleston', 'Greenville', 'Spartanburg'],
+  'South Dakota': ['Sioux Falls', 'Rapid City', 'Aberdeen', 'Brookings'],
+  'Tennessee': ['Nashville', 'Memphis', 'Knoxville', 'Chattanooga'],
+  'Texas': ['Houston', 'Austin', 'Dallas', 'San Antonio'],
+  'Utah': ['Salt Lake City', 'Provo', 'Ogden', 'St. George'],
+  'Vermont': ['Burlington', 'South Burlington', 'Rutland', 'Montpelier'],
+  'Virginia': ['Virginia Beach', 'Richmond', 'Norfolk', 'Alexandria'],
+  'Washington': ['Seattle', 'Spokane', 'Tacoma', 'Olympia'],
+  'West Virginia': ['Charleston', 'Huntington', 'Morgantown', 'Parkersburg'],
+  'Wisconsin': ['Milwaukee', 'Madison', 'Green Bay', 'Kenosha'],
+  'Wyoming': ['Cheyenne', 'Casper', 'Laramie', 'Gillette']
 };
+
 
 const CreateGame = () => {
   const navigate = useNavigate();
@@ -69,7 +114,7 @@ const CreateGame = () => {
     setSelectedState(state);
     setFieldValue('location.state', state);
     setFieldValue('location.city', '');
-    
+
     // Update cities based on selected state
     if (state && citiesByState[state]) {
       setCities(citiesByState[state]);
@@ -187,9 +232,9 @@ const CreateGame = () => {
 
               <div className="form-group">
                 <label htmlFor="location.state">State</label>
-                <Field 
-                  as="select" 
-                  id="location.state" 
+                <Field
+                  as="select"
+                  id="location.state"
                   name="location.state"
                   onChange={(e) => handleStateChange(e, setFieldValue)}
                 >
