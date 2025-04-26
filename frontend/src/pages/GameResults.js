@@ -144,7 +144,17 @@ const GameResults = () => {
               const isJoined = game.participants.some(p => (p._id || p) === user._id);
               return (
                 <div key={game._id} className="game-group-card">
-                  {/* Game card content */}
+                  <div className="game-group-header">
+                    <h2>{game.title}</h2>
+                    <span className="game-badge">{game.sport}</span>
+                  </div>
+                  <div className="game-group-details">
+                    <p><strong>Host:</strong> {game.host || 'Unknown'}</p>
+                    <p><strong>Location:</strong> {game.location.city}, {game.location.state}</p>
+                    <p><strong>Day:</strong> {game.dayOfWeek}</p>
+                    <p><strong>Time:</strong> {game.time}</p>
+                    <p><strong>Players:</strong> {game.participants.length}/{game.maxPlayers}</p>
+                  </div>
                   <div className="game-group-actions">
                     <Link to={`/games/${game._id}`} className="view-details-btn">
                       View Details
