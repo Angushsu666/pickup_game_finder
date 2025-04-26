@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { getGames } from '../services/gameService';
+import { useAuth } from '../context/AuthContext';
+import axios from 'axios';
 import './GameResults.css';
 
 const GameResults = () => {
   const location = useLocation();
+  const { user } = useAuth();
   const [games, setGames] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -15,6 +18,32 @@ const GameResults = () => {
   const city = queryParams.get('city') || '';
   const sport = queryParams.get('sport') || '';
   const dayOfWeek = queryParams.get('dayOfWeek') || '';
+
+  const joinGame = async (gameId) => {
+    if (!user || !user._id) {
+      alert('You must be logged in to join a game.');
+      return;
+    }
+
+    try {
+      const response = await axios.post(`/games/${gameId}/join`, {
+        userId: user._id,
+      });
+      alert(response.data.message);
+
+      // Update the local state to show that the user joined
+      setGames(prevGames =>
+        prevGames.map(game =>
+          game._id === gameId
+            ? { ...game, participants: [...game.participants, { _id: user._id }] }
+            : game
+        )
+      );
+    } catch (error) {
+      console.error(error);
+      alert('Failed to join the game.');
+    }
+  };
 
   useEffect(() => {
     const fetchGames = async () => {
@@ -28,7 +57,7 @@ const GameResults = () => {
 
         console.log("Searching with filters:", filters);
         const result = await getGames(filters);
-        
+
         if (result.success) {
           console.log("Search results:", result.data);
           setGames(result.data);
@@ -81,6 +110,13 @@ const GameResults = () => {
                   <Link to={`/games/${game._id}`} className="view-details-btn">
                     View Details
                   </Link>
+                  <button
+                    className="join-game-btn"
+                    onClick={() => joinGame(game._id)}
+                    disabled={game.participants.some(p => (p._id || p) === user._id)}
+                  >
+                    {game.participants.some(p => (p._id || p) === user._id) ? 'Joined' : 'Join Game'}
+                  </button>
                 </div>
               </div>
             ))}

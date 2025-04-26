@@ -1,5 +1,6 @@
 const express = require('express');
 const { check } = require('express-validator');
+const Game = require('../models/game.model');
 const gameController = require('../controllers/game.controller');
 const auth = require('../middleware/auth.middleware');
 
@@ -38,7 +39,31 @@ router.put('/:id', auth, gameController.updateGame);
 router.delete('/:id', auth, gameController.deleteGame);
 
 // Join a game
-router.post('/:id/join', auth, gameController.joinGame);
+//router.post('/:id/join', auth, gameController.joinGame);
+router.post('/:id/join', async (req, res) => {
+  const gameId = req.params.id;
+  const userId = req.body.userId;
+
+  try {
+    const game = await Game.findById(gameId);
+    if (!game) {
+      return res.status(404).json({ message: 'Game not found' });
+    }
+
+    // Optional: Check if user already joined
+    if (game.participants.includes(userId)) {
+      return res.status(400).json({ message: 'User already joined' });
+    }
+
+    game.participants.push(userId);
+    await game.save();
+
+    res.status(200).json({ message: 'Successfully joined the game!' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
 
 // Leave a game
 router.post('/:id/leave', auth, gameController.leaveGame);
