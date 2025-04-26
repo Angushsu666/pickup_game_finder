@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import Modal from 'react-modal';
 
-Modal.setAppElement('#root'); // Important for accessibility
+Modal.setAppElement('#root');
 
 const GameDetailsModal = ({ isOpen, onRequestClose, game }) => {
     const [isClosing, setIsClosing] = useState(false);
