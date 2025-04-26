@@ -4,6 +4,7 @@ import { toast } from 'react-toastify';
 import { getGames } from '../services/gameService';
 import { useAuth } from '../context/AuthContext';
 import axios from 'axios';
+import GameDetailsModal from '../components/GameDetailsModal';
 import './GameResults.css';
 
 const GameResults = () => {
@@ -12,13 +13,24 @@ const GameResults = () => {
   const [games, setGames] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-
+  const [modalIsOpen, setModalIsOpen] = useState(false);
+  const [selectedGame, setSelectedGame] = useState(null);
   // Parse query parameters
   const queryParams = new URLSearchParams(location.search);
   const state = queryParams.get('state') || '';
   const city = queryParams.get('city') || '';
   const sport = queryParams.get('sport') || '';
   const dayOfWeek = queryParams.get('dayOfWeek') || '';
+
+  const openModal = (game) => {
+    setSelectedGame(game);
+    setModalIsOpen(true);
+  };
+
+  const closeModal = () => {
+    setSelectedGame(null);
+    setModalIsOpen(false);
+  };
 
   const joinGame = async (gameId) => {
     if (!user || !user._id) {
@@ -156,9 +168,12 @@ const GameResults = () => {
                     <p><strong>Players:</strong> {game.participants.length}/{game.maxPlayers}</p>
                   </div>
                   <div className="game-group-actions">
-                    <Link to={`/games/${game._id}`} className="view-details-btn">
+                    <button
+                      className="view-details-btn"
+                      onClick={() => openModal(game)}
+                    >
                       View Details
-                    </Link>
+                    </button>
                     <button
                       className="join-game-btn"
                       onClick={() => toggleJoinLeave(game._id, isJoined)}
@@ -177,6 +192,12 @@ const GameResults = () => {
           <p>Why not <Link to="/create-game">create one</Link>?</p>
         </div>
       )}
+      <GameDetailsModal
+        isOpen={modalIsOpen}
+        onRequestClose={closeModal}
+        game={selectedGame}
+      />
+
     </div>
   );
 };
