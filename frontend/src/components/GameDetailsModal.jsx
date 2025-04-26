@@ -4,15 +4,26 @@ import Modal from 'react-modal';
 Modal.setAppElement('#root'); // Important for accessibility
 
 const GameDetailsModal = ({ isOpen, onRequestClose, game }) => {
+    const [isClosing, setIsClosing] = useState(false);
+
     if (!game) return null;
+
+    const handleClose = () => {
+        setIsClosing(true);
+        setTimeout(() => {
+            setIsClosing(false);
+            onRequestClose();
+        }, 300);
+    };
 
     return (
         <Modal
             isOpen={isOpen}
-            onRequestClose={onRequestClose}
+            onRequestClose={handleClose}
             contentLabel="Game Details"
-            className="game-modal"
+            className={`game-modal ${isClosing ? 'closing' : ''}`}
             overlayClassName="game-modal-overlay"
+            closeTimeoutMS={300}
         >
             <div className="modal-content">
                 <h2>{game.title}</h2>
@@ -21,7 +32,7 @@ const GameDetailsModal = ({ isOpen, onRequestClose, game }) => {
                 <p><strong>Day:</strong> {game.dayOfWeek}</p>
                 <p><strong>Time:</strong> {game.time}</p>
                 <p><strong>Players:</strong> {game.participants.length} / {game.maxPlayers}</p>
-                <button onClick={onRequestClose} className="close-btn">Close</button>
+                <button onClick={handleClose} className="close-btn">Close</button>
             </div>
         </Modal>
     );

@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { FaCalendarAlt, FaMapMarkerAlt, FaUser, FaUsers } from 'react-icons/fa';
 import './GameCard.css';
 
-const GameCard = ({ game }) => {
+const GameCard = ({ game, onViewDetails }) => {
   const sportIcons = {
     soccer: '⚽',
     basketball: '🏀',
@@ -41,7 +41,7 @@ const GameCard = ({ game }) => {
       <div className="game-card-footer">
         <button
           className="view-details-btn"
-          onClick={() => openModal(game)}
+          onClick={() => onViewDetails(game)}
         >
           View Details
         </button>
