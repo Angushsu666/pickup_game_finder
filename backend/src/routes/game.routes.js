@@ -66,6 +66,30 @@ router.post('/:id/join', async (req, res) => {
 });
 
 // Leave a game
-router.post('/:id/leave', auth, gameController.leaveGame);
+//router.post('/:id/leave', auth, gameController.leaveGame);
+// Leave a game
+router.post('/:id/leave', async (req, res) => {
+  const gameId = req.params.id;
+  const userId = req.body.userId;
+
+  try {
+    const game = await Game.findById(gameId);
+    if (!game) {
+      return res.status(404).json({ message: 'Game not found' });
+    }
+
+    // Remove user from participants
+    game.participants = game.participants.filter(
+      participant => participant.toString() !== userId
+    );
+
+    await game.save();
+
+    res.status(200).json({ message: 'Successfully left the game!' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
 
 module.exports = router; 
