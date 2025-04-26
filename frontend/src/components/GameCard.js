@@ -39,9 +39,13 @@ const GameCard = ({ game }) => {
         <p className="skill-level">Skill Level: {game.skillLevel}</p>
       </div>
       <div className="game-card-footer">
-        <Link to={`/games/${game._id}`} className="view-details-btn">
+        <button
+          className="view-details-btn"
+          onClick={() => openModal(game)}
+        >
           View Details
-        </Link>
+        </button>
+
       </div>
     </div>
   );

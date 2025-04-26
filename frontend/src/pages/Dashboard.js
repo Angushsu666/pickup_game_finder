@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { getGames } from '../services/gameService';
 import GameCard from '../components/GameCard';
+import GameDetailsModal from '../components/GameDetailsModal'; // import your Modal
 import { FaPlus } from 'react-icons/fa';
 import './Dashboard.css';
 
@@ -12,6 +13,18 @@ const Dashboard = () => {
   const [joinedGames, setJoinedGames] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [modalIsOpen, setModalIsOpen] = useState(false);
+  const [selectedGame, setSelectedGame] = useState(null);
+
+  const openModal = (game) => {
+    setSelectedGame(game);
+    setModalIsOpen(true);
+  };
+
+  const closeModal = () => {
+    setSelectedGame(null);
+    setModalIsOpen(false);
+  };
 
   useEffect(() => {
     const fetchGames = async () => {
@@ -23,42 +36,42 @@ const Dashboard = () => {
         }
 
         console.log("Current user ID:", user._id);
-        
+
         // Get all games
         const allGamesResult = await getGames();
-        
+
         if (allGamesResult.success && Array.isArray(allGamesResult.data)) {
           console.log("All games data:", allGamesResult.data);
-          
+
           // Filter games created by the user - check both string and ObjectId comparison
           const created = allGamesResult.data.filter(game => {
             const creatorId = game.creator?._id || game.creator;
             return creatorId && (creatorId === user._id || creatorId.toString() === user._id);
           });
-          
+
           console.log("Created games:", created);
           setMyGames(created);
-          
+
           // Filter games joined by the user but not created by them
           const joined = allGamesResult.data.filter(game => {
             const creatorId = game.creator?._id || game.creator;
             const isCreator = creatorId && (creatorId === user._id || creatorId.toString() === user._id);
-            
+
             const isParticipant = game.participants && game.participants.some(p => {
               const participantId = p._id || p;
               return participantId === user._id || participantId.toString() === user._id;
             });
-            
+
             return isParticipant && !isCreator;
           });
-          
+
           console.log("Joined games:", joined);
           setJoinedGames(joined);
         } else {
           console.error('Invalid games data:', allGamesResult);
           setError('Failed to load games - invalid data format');
         }
-        
+
         setLoading(false);
       } catch (error) {
         console.error('Dashboard error:', error);
@@ -86,7 +99,7 @@ const Dashboard = () => {
           <FaPlus /> Create Game
         </Link>
       </div>
-      
+
       <div className="dashboard-section">
         <h2>My Games</h2>
         {myGames.length === 0 ? (
@@ -94,12 +107,12 @@ const Dashboard = () => {
         ) : (
           <div className="games-grid">
             {myGames.map(game => (
-              <GameCard key={game._id} game={game} />
+              <GameCard key={game._id} game={game} onViewDetails={openModal} />
             ))}
           </div>
         )}
       </div>
-      
+
       <div className="dashboard-section">
         <h2>Games I've Joined</h2>
         {joinedGames.length === 0 ? (
@@ -107,11 +120,17 @@ const Dashboard = () => {
         ) : (
           <div className="games-grid">
             {joinedGames.map(game => (
-              <GameCard key={game._id} game={game} />
+              <GameCard key={game._id} game={game} onViewDetails={openModal} />
             ))}
           </div>
         )}
       </div>
+      <GameDetailsModal
+        isOpen={modalIsOpen}
+        onRequestClose={closeModal}
+        game={selectedGame}
+      />
+
     </div>
   );
 };
