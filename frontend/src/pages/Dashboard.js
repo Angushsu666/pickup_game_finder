@@ -4,7 +4,6 @@ import { useAuth } from '../context/AuthContext';
 import { getGames } from '../services/gameService';
 import GameCard from '../components/GameCard';
 import GameDetailsModal from '../components/GameDetailsModal'; // import your Modal
-import { FaPlus } from 'react-icons/fa';
 import './Dashboard.css';
 
 const Dashboard = () => {
@@ -93,15 +92,8 @@ const Dashboard = () => {
 
   return (
     <div className="dashboard-container">
-      <div className="dashboard-header">
-        <h1>My Dashboard</h1>
-        <Link to="/create-game" className="create-game-btn">
-          <FaPlus /> Create Game
-        </Link>
-      </div>
-
       <div className="dashboard-section">
-        <h2>My Games</h2>
+        <h2>Created Games</h2>
         {myGames.length === 0 ? (
           <p className="no-games-message">You haven't created any games yet.</p>
         ) : (
