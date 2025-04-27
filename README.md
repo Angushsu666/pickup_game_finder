@@ -153,5 +153,3 @@ pickup-games/
 ├── docker-compose.yml
 └── README.md
 ```
-
-Enjoy building and playing!
