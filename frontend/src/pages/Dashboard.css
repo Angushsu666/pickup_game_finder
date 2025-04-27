@@ -48,12 +48,15 @@
   color: var(--dark-text-primary);
   border-bottom: 1px solid var(--dark-border);
   padding-bottom: 0.75rem;
+  margin-left: 1rem;
+
 }
 
 .games-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   gap: 1.5rem;
+  padding-left: 1rem;    /* <-- inset all cards by 1rem */
 }
 
 .empty-state {

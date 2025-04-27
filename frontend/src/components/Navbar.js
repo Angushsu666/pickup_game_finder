@@ -16,9 +16,6 @@ const Navbar = () => {
   return (
     <nav className="navbar">
       <div className="navbar-container">
-        <Link to="/" className="navbar-logo">
-          PickupGames
-        </Link>
 
         <div className="navbar-menu">
           {isAuthenticated ? (

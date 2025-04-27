@@ -6,6 +6,7 @@
 
 .page-header {
   margin-bottom: 2rem;
+  padding-left: 1.5rem;
 }
 
 .page-header h1 {
@@ -16,6 +17,7 @@
 
 .page-header p {
   color: #666;
+  padding-left: 1.5rem;
 }
 
 .view-toggle {
@@ -82,7 +84,6 @@
   font-size: 1rem;
 }
 
-/* Add left padding to input fields */
 .filter-group input {
   padding-left: 1.5rem;
 }
@@ -193,6 +194,14 @@
 }
 
 @media (max-width: 768px) {
+  .find-games-page {
+    padding: 2rem 1rem;
+  }
+
+  .page-header {
+    padding-left: 1rem;
+  }
+
   .filters-grid {
     grid-template-columns: 1fr;
   }
@@ -209,4 +218,4 @@
   .map-view {
     height: 400px;
   }
-} 
+}
