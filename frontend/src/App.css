@@ -33,4 +33,5 @@ body {
 .main-content {
   flex: 1 0 auto;
   padding: 1rem;
+  padding-bottom: 80px; /* Adjust this value based on your footer height */
 }
